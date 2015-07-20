@@ -75,6 +75,12 @@ get_status_led() {
 	dir-835-a1)
 		status_led="d-link:amber:power"
 		;;
+	dlan-pro-500-wp)
+		status_led="devolo:green:wlan-2g"
+		;;
+	dlan-pro-1200-ac)
+		status_led="devolo:status:wlan"
+		;;
 	dragino2)
 		status_led="dragino2:red:system"
 		;;
@@ -327,9 +333,6 @@ get_status_led() {
 		;;
 	wrt400n)
 		status_led="wrt400n:blue:wps"
-		;;
-	wap4410n)
-		status_led="wrt4410n:green:power"
 		;;
 	wrt160nl)
 		status_led="wrt160nl:blue:wps"

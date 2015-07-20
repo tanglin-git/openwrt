@@ -208,6 +208,8 @@ platform_check_image() {
 	dir-615-i1 | \
 	dir-825-c1 | \
 	dir-835-a1 | \
+	dlan-pro-500-wp | \
+	dlan-pro-1200-ac | \
 	dragino2 | \
 	epg5000 | \
 	esr1750 | \
@@ -233,7 +235,6 @@ platform_check_image() {
 	nanostation-m-xw | \
 	rw2458n | \
 	wpj531 | \
-	wap4410n | \
 	wndap360 | \
 	wpj344 | \
 	wzr-hp-g300nh2 | \
