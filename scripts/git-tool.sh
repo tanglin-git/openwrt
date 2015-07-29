@@ -20,4 +20,5 @@ git_dirs="${OPENWRT_DIR} ${LUCI_DIR} ${MANAGEMENT_DIR} ${PACKAGE_DIR} ${ROUTING_
 for dir in ${git_dirs}; do
 	cd ${dir}
 	git $*
+	echo ""
 done
