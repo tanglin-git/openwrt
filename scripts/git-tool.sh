@@ -18,6 +18,7 @@ TARGETS_DIR=${OPENWRT_DIR}/feeds/targets
 git_dirs="${OPENWRT_DIR} ${LUCI_DIR} ${MANAGEMENT_DIR} ${PACKAGE_DIR} ${ROUTING_DIR} ${TELEPHONY_DIR} ${TARGETS_DIR}"
 
 for dir in ${git_dirs}; do
+	echo "cd ${dir}"
 	cd ${dir}
 	git $*
 	echo ""
