@@ -46,6 +46,8 @@ ramips_setup_interfaces()
 	dcs-930|\
 	dcs-930l-b1|\
 	ht-tm02|\
+	linkits7688 | \
+	linkits7688d | \
 	microwrt|\
 	ncs601w|\
 	w150m|\
@@ -81,7 +83,8 @@ ramips_setup_interfaces()
 	wsr-1166|\
 	wsr-600|\
 	wt1520|\
-	y1)
+	y1|\
+	zbt-wg2626)
 		ucidef_set_interfaces_lan_wan "eth0.1" "eth0.2"
 		ucidef_add_switch "switch0" "1" "1"
 		ucidef_add_switch_vlan "switch0" "1" "0 1 2 3 6t"
@@ -102,7 +105,8 @@ ramips_setup_interfaces()
 		ucidef_add_switch_vlan "switch0" "2" "4 5t"
 		;;
 	asl26555|\
-	re6500)
+	re6500|\
+	rp-n53)
 		ucidef_set_interface_lan "eth0.1"
 		ucidef_add_switch "switch0" "1" "1"
 		ucidef_add_switch_vlan "switch0" "1" "1 2 3 4 6t"
@@ -302,6 +306,11 @@ ramips_setup_macs()
 	ht-tm02)
 		lan_mac=$(cat /sys/class/net/eth0/address)
 		;;
+	linkits7688 | \
+	linkits7688d)
+		wan_mac=$(mtd_get_mac_binary factory 4)
+		lan_mac=$(mtd_get_mac_binary factory 46)
+		;;
 	m3|\
 	m4|\
 	x5|\
@@ -325,6 +334,10 @@ ramips_setup_macs()
 	tew-692gr)
 		lan_mac=$(cat /sys/class/net/eth0/address)
 		wan_mac=$(macaddr_add "$lan_mac" 4)
+		;;
+	tiny-ac)
+		lan_mac=$(mtd_get_mac_ascii u-boot-env LAN_MAC_ADDR)
+		wan_mac=$(mtd_get_mac_ascii u-boot-env WAN_MAC_ADDR)
 		;;
 	w306r-v20)
 		lan_mac=$(cat /sys/class/net/eth0/address)

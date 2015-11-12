@@ -62,6 +62,8 @@ platform_check_image() {
 	ht-tm02|\
 	hw550-3g|\
 	ip2202|\
+	linkits7688|\
+	linkits7688d|\
 	m2m|\
 	m3|\
 	m4|\
@@ -98,6 +100,7 @@ platform_check_image() {
 	sl-r7205|\
 	tew-691gr|\
 	tew-692gr|\
+	tiny-ac|\
 	ur-326n4g|\
 	ur-336un|\
 	v22rw-2x2|\
@@ -129,6 +132,7 @@ platform_check_image() {
 	y1|\
 	y1s|\
 	zbt-wa05|\
+	zbt-wg2626|\
 	zbt-wr8305rt|\
 	zte-q7)
 		[ "$magic" != "27051956" ] && {
@@ -199,4 +203,9 @@ disable_watchdog() {
 	}
 }
 
+blink_led() {
+	. /etc/diag.sh; set_state upgrade
+}
+
 append sysupgrade_pre_upgrade disable_watchdog
+append sysupgrade_pre_upgrade blink_led
