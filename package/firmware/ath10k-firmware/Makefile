@@ -8,8 +8,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ath10k-firmware
-PKG_SOURCE_VERSION:=7d14e337ad25c0ef3e78fc47eac336697ca612e8
-PKG_VERSION:=2014-10-28-$(PKG_SOURCE_VERSION)
+PKG_SOURCE_VERSION:=69f955c3dd95d97c7c30960aa5c9852c80b85cc3
+PKG_VERSION:=2014-11-13-$(PKG_SOURCE_VERSION)
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
@@ -47,6 +47,17 @@ $(Package/ath10k-firmware-default)
   TITLE:=ath10k firmware for QCA6174 devices
 endef
 
+QCA99X0_BOARD_REV:=ddcec9efd245da9365c474f513a855a55f3ac7fe
+QCA99X0_BOARD_FILE:=board-2.bin.$(QCA99X0_BOARD_REV)
+
+define Download/qca99x0-board
+  URL:=https://www.codeaurora.org/cgit/quic/qsdk/oss/firmware/ath10k-firmware/plain/ath10k/QCA99X0/hw2.0
+  URL_FILE:=board-2.bin?id=ddcec9efd245da9365c474f513a855a55f3ac7fe
+  FILE:=$(QCA99X0_BOARD_FILE)
+  MD5SUM:=a2b3c653c2363a5641200051d6333d0a
+endef
+$(eval $(call Download,qca99x0-board))
+
 define Build/Compile
 
 endef
@@ -54,20 +65,23 @@ endef
 define Package/ath10k-firmware-qca988x/install
 	$(INSTALL_DIR) $(1)/lib/firmware/ath10k/QCA988X/hw2.0
 	$(INSTALL_DATA) \
-		$(PKG_BUILD_DIR)/ath10k/QCA988X/hw2.0/board.bin \
+		$(PKG_BUILD_DIR)/QCA988X/board.bin \
 		$(1)/lib/firmware/ath10k/QCA988X/hw2.0/
 	$(INSTALL_DATA) \
-		$(PKG_BUILD_DIR)/QCA988X/10.2.4/firmware-5.bin_10.2.4.70.10-2 \
+		$(PKG_BUILD_DIR)/QCA988X/10.2.4/firmware-5.bin_10.2.4.70.12-2 \
 		$(1)/lib/firmware/ath10k/QCA988X/hw2.0/firmware-5.bin
 endef
 
 define Package/ath10k-firmware-qca6174/install
 	$(INSTALL_DIR) $(1)/lib/firmware/ath10k
-	$(CP) $(PKG_BUILD_DIR)/ath10k/QCA6174 $(1)/lib/firmware/ath10k/
+	$(CP) $(PKG_BUILD_DIR)/QCA6174 $(1)/lib/firmware/ath10k/
 endef
 
 define Package/ath10k-firmware-qca99x0/install
 	$(INSTALL_DIR) $(1)/lib/firmware/ath10k/QCA99X0/hw2.0
+	$(INSTALL_DATA) \
+		$(DL_DIR)/$(QCA99X0_BOARD_FILE) \
+		$(1)/lib/firmware/ath10k/QCA99X0/hw2.0/board-2.bin
 	$(INSTALL_DATA) \
 		$(PKG_BUILD_DIR)/QCA99X0/hw2.0/boardData_AR900B_CUS239_5G_v2_001.bin \
 		$(1)/lib/firmware/ath10k/QCA99X0/hw2.0/board.bin
