@@ -39,7 +39,7 @@ define Device/Default
 endef
 
 define Build/patch-dtb
-	$(LINUX_DIR)/scripts/dtc/dtc -O dtb -o $@.dtb ../dts/$(DTS).dts
+	$(call Image/BuildDTB,../dts/$(DTS).dts,$@.dtb)
 	$(STAGING_DIR_HOST)/bin/patch-dtb $@ $@.dtb
 endef
 
@@ -67,6 +67,51 @@ define Build/relocate-kernel
 		cat $@ \
 	) > $@.new
 	mv $@.new $@
+endef
+
+define Build/ubnt-erx-factory-compat
+	echo '21001:6' > $@.compat
+	$(TAR) -cf $@ --transform='s/^.*/compat/' $@.compat
+	$(RM) $@.compat
+endef
+
+define Build/ubnt-erx-factory-kernel
+	if [ -e $(BIN_DIR)/$(KERNEL_INITRAMFS_IMAGE) ]; then \
+		$(TAR) -rf $@ --transform='s/^.*/vmlinux.tmp/' $(BIN_DIR)/$(KERNEL_INITRAMFS_IMAGE); \
+		\
+		md5sum --binary $(BIN_DIR)/$(KERNEL_INITRAMFS_IMAGE) | awk '{print $$1}'> $@.md5; \
+		$(TAR) -rf $@ --transform='s/^.*/vmlinux.tmp.md5/' $@.md5; \
+		$(RM) $@.md5; \
+	fi
+endef
+
+define Build/ubnt-erx-factory-rootfs
+	echo "dummy" > $@.rootfs
+	$(TAR) -rf $@ --transform='s/^.*/squashfs.tmp/' $@.rootfs
+
+	md5sum --binary $@.rootfs | awk '{print $$1}'> $@.md5
+	$(TAR) -rf $@ --transform='s/^.*/squashfs.tmp.md5/' $@.md5
+	$(RM) $@.md5
+	$(RM) $@.rootfs
+endef
+
+define Build/ubnt-erx-factory-version
+	echo '$(BOARD) $(VERSION_CODE) $(VERSION_NUMBER)' > $@.version
+	$(TAR) -rf $@ --transform='s/^.*/version.tmp/' $@.version
+	$(RM) $@.version
+endef
+
+#We need kernel+initrams fit into kernel partition
+define Build/ubnt-erx-factory-check-size
+	@[ $$(($(subst k,* 1024,$(subst m, * 1024k,$(1))))) -ge "$$($(TAR) -xf $@ vmlinux.tmp -O | wc -c)" ] || { \
+		echo "WARNING: Initramfs kernel for image $@ is too big (kernel size: $$($(TAR) -xf $@ vmlinux.tmp -O | wc -c), max size $(1))" >&2; \
+		$(RM) -f $@; \
+	}
+
+	@[ "$$($(TAR) -xf $@ vmlinux.tmp -O | wc -c)" -gt 0 ] || { \
+		echo "WARNING: Kernel for image $@ not found" >&2; \
+		$(RM) -f $@; \
+	}
 endef
 
 define MkCombineduImage
@@ -954,7 +999,7 @@ endif
 #
 
 ifeq ($(SUBTARGET),mt7621)
-  TARGET_DEVICES += mt7621 wsr-600 wsr-1166 dir-860l-b1 firewrt pbr-m1 re6500 sap-g3200u3 zbt-wg2626 wf-2881
+  TARGET_DEVICES += mt7621 wsr-600 wsr-1166 dir-860l-b1 firewrt pbr-m1 re6500 sap-g3200u3 ubnt-erx witi wf-2881 zbt-wg2626
 endif
 
 define Device/mt7621
@@ -1004,6 +1049,11 @@ define Device/sap-g3200u3
   DTS := SAP-G3200U3
 endef
 
+define Device/witi
+  DTS := WITI
+  IMAGE_SIZE := $(ralink_default_fw_size_16M)
+endef
+
 define Device/zbt-wg2626
   DTS := ZBT-WG2626
   IMAGE_SIZE := $(ralink_default_fw_size_16M)
@@ -1016,6 +1066,20 @@ define Device/wf-2881
   KERNEL_SIZE := 2097152
   FILESYSTEMS := squashfs
   IMAGE/sysupgrade.bin := append-kernel | pad-to $$(KERNEL_SIZE) | append-ubi | check-size $$$$(IMAGE_SIZE)
+endef
+
+define Device/ubnt-erx
+  DTS := UBNT-ERX
+  FILESYSTEMS := squashfs
+  KERNEL_SIZE := 3145728
+  KERNEL := $(KERNEL_DTB) | uImage lzma
+  IMAGES := sysupgrade.tar factory-initramfs.tar
+  IMAGE/factory-initramfs.tar := ubnt-erx-factory-compat | \
+				 ubnt-erx-factory-kernel | \
+				 ubnt-erx-factory-rootfs | \
+				 ubnt-erx-factory-version | \
+				 ubnt-erx-factory-check-size $$(KERNEL_SIZE)
+  IMAGE/sysupgrade.tar := sysupgrade-nand
 endef
 
 #
@@ -1035,12 +1099,10 @@ endif
 # MT7688 Profiles
 #
 
-Image/Build/Profile/mt7688=$(call BuildFirmware/Default16M/$(1),$(1),mt7688,MT7688)
 Image/Build/Profile/LinkIt7688=$(call BuildFirmware/Default32M/$(1),$(1),LinkIt7688,LINKIT7688)
 
 ifeq ($(SUBTARGET),mt7688)
 define Image/Build/Profile/Default
-	$(call Image/Build/Profile/mt7688,$(1))
 	$(call Image/Build/Profile/LinkIt7688,$(1))
 endef
 endif

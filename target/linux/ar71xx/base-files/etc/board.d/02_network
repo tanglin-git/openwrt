@@ -4,7 +4,7 @@
 #
 
 . /lib/functions/system.sh
-. /lib/functions/uci-defaults-new.sh
+. /lib/functions/uci-defaults.sh
 . /lib/ar71xx.sh
 
 board_config_update
@@ -15,6 +15,7 @@ board=$(ar71xx_board_name)
 case "$board" in
 all0315n |\
 all0258n |\
+dr344 |\
 ja76pf2|\
 rocket-m-ti |\
 ubnt-unifi-outdoor)
@@ -33,6 +34,11 @@ epg5000)
 		"0@eth0" "1:lan:4" "2:lan:3" "3:lan:2" "4:lan:1" "5:wan"
 	;;
 
+cr5000)
+	ucidef_add_switch "switch0" \
+		"0@eth0" "1:lan" "2:lan" "3:lan" "4:lan" "5:wan"
+	;;
+
 ap136-010 |\
 ap147-010)
 	ucidef_set_interfaces_lan_wan "eth0" "eth1"
@@ -42,6 +48,7 @@ ap147-010)
 
 ap136-020 |\
 ap135-020 |\
+tew-823dru |\
 tl-wr1043nd-v2 |\
 wzr-450hp2)
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
@@ -247,6 +254,12 @@ wzr-hp-g300nh)
 		"0:lan" "1:lan" "2:lan" "3:lan" "5@eth0"
 	;;
 
+cr3000)
+	ucidef_set_interfaces_lan_wan "eth0.1" "eth1"
+	ucidef_add_switch "switch0"  \
+		"0@eth0" "1:lan:1" "2:lan:4" "3:lan:3" "4:lan:2"
+	;;
+
 dgl-5500-a1 |\
 dir-825-c1)
 	local mac
@@ -306,12 +319,14 @@ antminer-s1 |\
 antminer-s3 |\
 aw-nr580 |\
 bullet-m |\
+c-55 |\
 cap4200ag |\
 eap300v2 |\
 eap7660d |\
 el-mini |\
 loco-m-xw |\
 mr1750 |\
+mr18 |\
 mr600 |\
 mr600v2 |\
 mr900 |\
@@ -347,6 +362,10 @@ wndap360 |\
 mynet-rext |\
 wp543)
 	ucidef_set_interface_lan "eth0"
+	;;
+
+cap324)
+	ucidef_set_interface_lan "eth0" "dhcp"
 	;;
 
 arduino-yun | \

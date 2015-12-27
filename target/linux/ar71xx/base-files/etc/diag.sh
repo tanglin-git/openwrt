@@ -55,6 +55,12 @@ get_status_led() {
 	bxu2000n-2-a1)
 		status_led="bhu:green:status"
 		;;
+	cap324)
+		status_led="pcs:green:power"
+		;;
+	c-55)
+		status_led="c-55:green:pwr"
+		;;
 	cap4200ag)
 		status_led="senao:green:pwr"
 		;;
@@ -63,6 +69,12 @@ get_status_led() {
 		;;
 	cpe510)
 		status_led="tp-link:green:link4"
+		;;
+	cr3000)
+		status_led="pcs:amber:power"
+		;;
+	cr5000)
+		status_led="pcs:amber:power"
 		;;
 	db120)
 		status_led="db120:green:status"
@@ -94,6 +106,9 @@ get_status_led() {
 		;;
 	dlan-pro-1200-ac)
 		status_led="devolo:status:wlan"
+		;;
+	dr344)
+		status_led="dr344:green:status"
 		;;
 	dragino2)
 		status_led="dragino2:red:system"
@@ -148,6 +163,9 @@ get_status_led() {
 		;;
 	mr16)
 		status_led="mr16:green:power"
+		;;
+	mr18)
+		status_led="mr18:green:tricolor0"
 		;;
 	mr600)
 		status_led="mr600:orange:power"
@@ -249,7 +267,8 @@ get_status_led() {
 		status_led="trendnet:blue:wps"
 		;;
 	tew-712br|\
-	tew-732br)
+	tew-732br|\
+	tew-823dru)
 		status_led="trendnet:green:power"
 		;;
 	tl-mr3020)
