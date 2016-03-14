@@ -22,7 +22,9 @@ define Build/netgear-squashfs
 	cp $@ $@.fs/image/uImage
 	$(STAGING_DIR_HOST)/bin/mksquashfs-lzma \
 		$@.fs $@.squashfs \
-		-noappend -root-owned -be -b 65536
+		-noappend -root-owned -be -b 65536 \
+		$(if $(SOURCE_DATE_EPOCH),-fixed-time $(SOURCE_DATE_EPOCH))
+
 	dd if=/dev/zero bs=1k count=1 >> $@.squashfs
 	mkimage \
 		-A mips -O linux -T filesystem -C none \
@@ -461,6 +463,14 @@ define Device/antminer-s3
     CONSOLE := ttyATH0,115200
 endef
 
+define Device/antrouter-r1
+    $(Device/tplink-8mlzma)
+    BOARDNAME := ANTROUTER-R1
+    DEVICE_PROFILE := ANTROUTERR1
+    TPLINK_HWID := 0x44440101
+    CONSOLE := ttyATH0,115200
+endef
+
 define Device/el-m150
     $(Device/tplink-8mlzma)
     BOARDNAME := EL-M150
@@ -476,7 +486,7 @@ define Device/el-mini
     TPLINK_HWID := 0x01530001
     CONSOLE := ttyATH0,115200
 endef
-TARGET_DEVICES += antminer-s1 antminer-s3 el-m150 el-mini
+TARGET_DEVICES += antminer-s1 antminer-s3 antrouter-r1 el-m150 el-mini
 
 define Device/gl-inet-6408A-v1
     $(Device/tplink-8mlzma)
@@ -751,7 +761,7 @@ define Device/tl-wr743nd-v2
 endef
 TARGET_DEVICES += tl-wr740n-v1 tl-wr740n-v3 tl-wr740n-v4 tl-wr740n-v5 tl-wr741nd-v1 tl-wr741nd-v2 tl-wr741nd-v4 tl-wr741nd-v5 tl-wr743nd-v1 tl-wr743nd-v2
 
-define Device/tl-wr841nd-v1.5
+define Device/tl-wr841-v1.5
     $(Device/tplink-4m)
     BOARDNAME := TL-WR841N-v1.5
     DEVICE_PROFILE := TLWR841
@@ -759,7 +769,7 @@ define Device/tl-wr841nd-v1.5
     TPLINK_HWREV := 2
 endef
 
-define Device/tl-wr841nd-v3
+define Device/tl-wr841-v3
     $(Device/tplink-4m)
     BOARDNAME := TL-WR941ND
     DEVICE_PROFILE := TLWR841
@@ -767,35 +777,35 @@ define Device/tl-wr841nd-v3
     TPLINK_HWREV := 3
 endef
 
-define Device/tl-wr841nd-v5
+define Device/tl-wr841-v5
     $(Device/tplink-4m)
     BOARDNAME := TL-WR741ND
     DEVICE_PROFILE := TLWR841
     TPLINK_HWID := 0x08410005
 endef
 
-define Device/tl-wr841nd-v7
+define Device/tl-wr841-v7
     $(Device/tplink-4m)
     BOARDNAME := TL-WR841N-v7
     DEVICE_PROFILE := TLWR841
     TPLINK_HWID := 0x08410007
 endef
 
-define Device/tl-wr841n-v8
+define Device/tl-wr841-v8
     $(Device/tplink-4mlzma)
     BOARDNAME := TL-WR841N-v8
     DEVICE_PROFILE := TLWR841
     TPLINK_HWID := 0x08410008
 endef
 
-define Device/tl-wr841n-v9
+define Device/tl-wr841-v9
     $(Device/tplink-4mlzma)
     BOARDNAME := TL-WR841N-v9
     DEVICE_PROFILE := TLWR841
     TPLINK_HWID := 0x08410009
 endef
 
-define Device/tl-wr841n-v10
+define Device/tl-wr841-v10
     $(Device/tplink-4mlzma)
     BOARDNAME := TL-WR841N-v9
     DEVICE_PROFILE := TLWR841
@@ -829,7 +839,7 @@ define Device/tl-wr847n-v8
     DEVICE_PROFILE := TLWR841
     TPLINK_HWID := 0x08470008
 endef
-TARGET_DEVICES += tl-wr841nd-v1.5 tl-wr841nd-v3 tl-wr841nd-v5 tl-wr841nd-v7 tl-wr841n-v8 tl-wr841n-v9 tl-wr841n-v10 tl-wr842n-v1 tl-wr842n-v2 tl-wr843nd-v1 tl-wr847n-v8
+TARGET_DEVICES += tl-wr841-v1.5 tl-wr841-v3 tl-wr841-v5 tl-wr841-v7 tl-wr841-v8 tl-wr841-v9 tl-wr841-v10 tl-wr842n-v1 tl-wr842n-v2 tl-wr843nd-v1 tl-wr847n-v8
 
 define Device/tl-wr941nd-v2
     $(Device/tplink-4m)
@@ -925,7 +935,7 @@ define Device/tl-wdr4900-v2
 endef
 TARGET_DEVICES += tl-wdr4900-v2
 
-define Device/tl-wa701n-v1
+define Device/tl-wa701nd-v1
     $(Device/tplink-4m)
     BOARDNAME := TL-WA901ND
     DEVICE_PROFILE := TLWA701
@@ -940,7 +950,7 @@ define Device/tl-wa701nd-v2
     CONSOLE := ttyATH0,115200
 endef
 
-define Device/tl-wa730rev1
+define Device/tl-wa730re-v1
     $(Device/tplink-4m)
     BOARDNAME := TL-WA901ND
     DEVICE_PROFILE := TLWA730RE
@@ -960,7 +970,7 @@ define Device/tl-wa7510n
     DEVICE_PROFILE := TLWA7510
     TPLINK_HWID := 0x75100001
 endef
-TARGET_DEVICES += tl-wa701n-v1 tl-wa701nd-v2 tl-wa730rev1 tl-wa750re-v1 tl-wa7510n
+TARGET_DEVICES += tl-wa701nd-v1 tl-wa701nd-v2 tl-wa730re-v1 tl-wa750re-v1 tl-wa7510n
 
 define Device/tl-wa801nd-v1
     $(Device/tplink-4m)
@@ -974,6 +984,13 @@ define Device/tl-wa801nd-v2
     BOARDNAME := TL-WA801ND-v2
     DEVICE_PROFILE := TLWA801
     TPLINK_HWID := 0x08010002
+endef
+
+define Device/tl-wa801nd-v3
+    $(Device/tplink-4mlzma)
+    BOARDNAME := TL-WA801ND-v3
+    DEVICE_PROFILE := TLWA801
+    TPLINK_HWID := 0x08010003
 endef
 
 define Device/tl-wa830re-v1
@@ -1003,7 +1020,7 @@ define Device/tl-wa860re-v1
     DEVICE_PROFILE := TLWA860
     TPLINK_HWID := 0x08600001
 endef
-TARGET_DEVICES += tl-wa801nd-v1 tl-wa801nd-v2 tl-wa830re-v1 tl-wa830re-v2 tl-wa850re-v1 tl-wa860re-v1
+TARGET_DEVICES += tl-wa801nd-v1 tl-wa801nd-v2 tl-wa801nd-v3 tl-wa830re-v1 tl-wa830re-v2 tl-wa850re-v1 tl-wa860re-v1
 
 define Device/tl-wa901nd-v1
     $(Device/tplink-4m)
@@ -1043,6 +1060,15 @@ define Device/smart-300
     TPLINK_HWID := 0x93410001
 endef
 TARGET_DEVICES += smart-300
+
+define Device/tellstick-znet-lite
+    $(Device/tplink-16mlzma)
+    BOARDNAME := TELLSTICK-ZNET-LITE
+    DEVICE_PROFILE := TELLSTICKZNETLITE
+    TPLINK_HWID := 0x00726001
+    CONSOLE := ttyATH0,115200
+endef
+TARGET_DEVICES += tellstick-znet-lite
 
 define Device/oolite
     $(Device/tplink-16mlzma)
@@ -1124,12 +1150,21 @@ define Device/ubnt-unifi
   DEVICE_PROFILE := UBNT UBNTUNIFI
 endef
 
+define Device/ubnt-unifiac
+  DEVICE_PROFILE := UBNT UBNTUNIFIAC
+  IMAGE_SIZE := 7744k
+  MTDPARTS = spi0.0:384k(u-boot)ro,64k(u-boot-env)ro,7744k(firmware),7744k(ubnt-airos)ro,128k(bs)ro,256k(cfg)ro,64k(EEPROM)ro
+  IMAGES := sysupgrade.bin
+  IMAGE/sysupgrade.bin = append-kernel $$$$(BLOCKSIZE) | append-rootfs | pad-rootfs | check-size $$$$(IMAGE_SIZE)
+  BOARDNAME := UBNT-UF-AC
+endef
+
 define Device/ubnt-unifi-outdoor
   $(Device/ubnt-bz)
   BOARDNAME := UBNT-U20
   DEVICE_PROFILE := UBNT UBNTUNIFIOUTDOOR
 endef
-TARGET_DEVICES += ubnt-unifi ubnt-unifi-outdoor
+TARGET_DEVICES += ubnt-unifi ubnt-unifiac ubnt-unifi-outdoor
 
 define Device/ubnt-nano-m-xw
   $(Device/ubnt-xw)
@@ -1177,7 +1212,7 @@ define Device/ubdev01
   $(Device/ubnt-xm)
   MTDPARTS := spi0.0:256k(u-boot)ro,64k(u-boot-env)ro,7488k(firmware),64k(certs),256k(cfg)ro,64k(EEPROM)ro
   BOARDNAME := UBNT-UF
-  UBNT_BOARD := XM
+  UBNT_BOARD := UBDEV01
   UBNT_TYPE := XM
   UBNT_CHIP := ar7240
 endef
@@ -2056,7 +2091,8 @@ define Image/Build/Netgear/buildkernel
 	cat $(KDIR_TMP)/vmlinux-$(2).uImage > $(KDIR_TMP)/$(2)/image/uImage
 	$(STAGING_DIR_HOST)/bin/mksquashfs-lzma \
 		$(KDIR_TMP)/$(2) $(KDIR_TMP)/vmlinux-$(2).uImage.squashfs.tmp1 \
-		-noappend -root-owned -be -b 65536
+		-noappend -root-owned -be -b 65536 \
+		$(if $(SOURCE_DATE_EPOCH),-fixed-time $(SOURCE_DATE_EPOCH))
 	( \
 		cat $(KDIR_TMP)/vmlinux-$(2).uImage.squashfs.tmp1; \
 		dd if=/dev/zero bs=1k count=1 \
@@ -2423,11 +2459,12 @@ $(eval $(call SingleProfile,MyLoader,64k,WPE72_16M,wpe72,,ttyS0,115200,0x1000000
 
 $(eval $(call SingleProfile,Netgear,64kraw,WNR2000V3,wnr2000v3,WNR2000V3,ttyS0,115200,$$(wnr2000v3_mtdlayout),0x32303033,WNR2000V3,"" NA,-H 29763551+04+32))
 $(eval $(call SingleProfile,NetgearLzma,64kraw,WNR2000V4,wnr2000v4,WNR2000V4,ttyS0,115200,$$(wnr2000v4_mtdlayout),0x32303034,WNR2000V4,"" NA,))
-$(eval $(call SingleProfile,Netgear,64kraw,WNR2200,wnr2200,WNR2200,ttyS0,115200,$$(wnr2200_mtdlayout),0x32323030,WNR2200,"" NA,))
+$(eval $(call SingleProfile,Netgear,64kraw,WNR2200,wnr2200,WNR2200,ttyS0,115200,$$(wnr2200_mtdlayout),0x32323030,wnr2200,"" NA,))
 $(eval $(call SingleProfile,Netgear,64kraw,REALWNR612V2,wnr612v2,WNR612V2,ttyS0,115200,$$(wnr2000v3_mtdlayout),0x32303631,WNR612V2,"",))
 $(eval $(call SingleProfile,Netgear,64kraw,N150R,n150r,WNR612V2,ttyS0,115200,$$(wnr2000v3_mtdlayout),0x32303631,N150R,"",))
 $(eval $(call SingleProfile,Netgear,64kraw,REALWNR1000V2,wnr1000v2,WNR1000V2,ttyS0,115200,$$(wnr2000v3_mtdlayout),0x31303031,WNR1000V2,"",))
 $(eval $(call SingleProfile,Netgear,64kraw,WNR1000V2_VC,wnr1000v2-vc,WNR1000V2,ttyS0,115200,$$(wnr2000v3_mtdlayout),0x31303030,WNR1000V2-VC,"",))
+$(eval $(call SingleProfile,Netgear,64kraw,WPN824N,wpn824n,WPN824N,ttyS0,115200,$$(wnr2000v3_mtdlayout),0x31313030,WPN824N,"" NA,))
 
 $(eval $(call SingleProfile,OpenMesh,squashfs-only,OM2P,om2p,,,,OM2P))
 $(eval $(call SingleProfile,OpenMesh,squashfs-only,OM5P,om5p,,,,OM5P))

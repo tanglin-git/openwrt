@@ -23,6 +23,7 @@ ubnt-unifi-outdoor)
 	;;
 
 ap132 |\
+ap152 |\
 wlr8100)
 	ucidef_add_switch "switch0" \
 		"0@eth0" "2:lan" "3:lan" "4:lan" "5:lan" "1:wan"
@@ -191,6 +192,11 @@ el-m150)
 		"0:lan" "1:lan" "3@eth1" # XXX: confirm!
 	;;
 
+tellstick-znet-lite)
+	ucidef_set_interface_wan "eth0" "dhcp"
+	ucidef_set_interface_raw "wlan" "wlan0" "dhcp"
+	;;
+
 tl-wdr4300|\
 tl-wr1041n-v2)
 	ucidef_add_switch "switch0" \
@@ -226,7 +232,8 @@ wnr2000-v3 |\
 wnr2000-v4 |\
 wnr2200 |\
 wnr612-v2 |\
-wnr1000-v2)
+wnr1000-v2 |\
+wpn824n)
 	ucidef_set_interfaces_lan_wan "eth1" "eth0"
 	ucidef_add_switch "switch0" \
 		"0:lan:4" "1:lan:3" "2:lan:2" "3:lan:1" "4@eth1" # XXX: confirm!
@@ -308,15 +315,15 @@ dlan-pro-500-wp)
 
 dlan-pro-1200-ac)
 	ucidef_set_interface_lan "eth0"
-	ucidef_add_switch "switch0"
-	ucidef_add_switch_attr "switch0" "reset" "false"
-	ucidef_add_switch_ports "switch0" \
+	ucidef_add_switch "switch0" \
 		"0@eth0" "2:lan" "3:lan" "4:lan"
+	ucidef_add_switch_attr "switch0" "enable" "false"
 	;;
 
 all0305 |\
 antminer-s1 |\
 antminer-s3 |\
+antrouter-r1 |\
 aw-nr580 |\
 bullet-m |\
 c-55 |\
@@ -358,6 +365,7 @@ tl-wa901nd-v2 |\
 tl-wa901nd-v3 |\
 tl-wr703n |\
 tube2h |\
+unifiac |\
 wndap360 |\
 mynet-rext |\
 wp543)
@@ -368,7 +376,8 @@ cap324)
 	ucidef_set_interface_lan "eth0" "dhcp"
 	;;
 
-arduino-yun | \
+arduino-yun |\
+tl-wa801nd-v3 |\
 dir-505-a1)
 	ucidef_set_interface_lan "eth1"
 	;;

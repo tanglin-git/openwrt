@@ -34,7 +34,9 @@ get_status_led() {
 	a5-v11|\
 	d105|\
 	dcs-930l-b1|\
+	ex2700|\
 	hlk-rm04|\
+	jhr-n825r|\
 	mpr-a1|\
 	mpr-a2)
 		status_led="$board:red:power"
@@ -74,7 +76,8 @@ get_status_led() {
 	dir-645)
 		status_led="$board:green:wps"
 		;;
-	cf-wr800n)
+	cf-wr800n|\
+	psg1208)
 		status_led="$board:white:wps"
 		;;
 	cy-swr1100|\
@@ -107,6 +110,8 @@ get_status_led() {
 		status_led="$board:orange:status"
 		;;
 	hc5*61|\
+	jhr-n805r|\
+	jhr-n926r|\
 	mlw221|\
 	mlwg2)
 		status_led="$board:blue:system"
@@ -180,6 +185,11 @@ get_status_led() {
 	wsr-1166|\
 	wsr-600)
 		status_led="$board:orange:diag"
+		;;
+	wrtnode2r | \
+	wrtnode2p | \
+	wrtnode)
+		status_led="wrtnode:blue:indicator"
 		;;
 	esac
 }

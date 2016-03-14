@@ -42,7 +42,7 @@ generate_static_network() {
 					json_get_vars type annex firmware tone xfer_mode
 					uci -q batch <<-EOF
 						delete network.dsl
-						set network.dsl='$type'
+						set network.dsl='dsl'
 						set network.dsl.annex='$annex'
 						set network.dsl.firmware='$firmware'
 						set network.dsl.tone='$tone'
@@ -77,7 +77,13 @@ generate_network() {
 		set network.$1.type='$type'
 		set network.$1.ifname='$ifname'
 		set network.$1.proto='none'
-		set network.$1.macaddr='$macaddr'
+	EOF
+
+	[ -n "$macaddr" ] && uci -q batch <<-EOF
+		delete network.$1_dev
+		set network.$1_dev='device'
+		set network.$1_dev.name='$ifname'
+		set network.$1_dev.macaddr='$macaddr'
 	EOF
 
 	case "$protocol" in
@@ -257,11 +263,11 @@ generate_led() {
 		;;
 
 		netdev)
-			local device
-			json_get_vars device
+			local device mode
+			json_get_vars device mode
 			uci -q batch <<-EOF
 				set system.$cfg.trigger='netdev'
-				set system.$cfg.mode='link tx rx'
+				set system.$cfg.mode='$mode'
 				set system.$cfg.dev='$device'
 			EOF
 		;;
@@ -290,18 +296,19 @@ generate_led() {
 		;;
 
 		switch)
-			local port_mask
-			json_get_vars port_mask
+			local port_mask speed_mask
+			json_get_vars port_mask speed_mask
 			uci -q batch <<-EOF
 				set system.$cfg.port_mask='$port_mask'
+				set system.$cfg.speed_mask='$speed_mask'
 			EOF
 		;;
 
-		timer)
+		timer|oneshot)
 			local delayon delayoff
 			json_get_vars delayon delayoff
 			uci -q batch <<-EOF
-				set system.$cfg.trigger='timer'
+				set system.$cfg.trigger='$type'
 				set system.$cfg.delayon='$delayon'
 				set system.$cfg.delayoff='$delayoff'
 			EOF

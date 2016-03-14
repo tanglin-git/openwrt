@@ -39,7 +39,7 @@ wndr3700_board_detect() {
 	"33373031")
 		model="$(ar71xx_get_mtd_offset_size_format art 41 32 %c)"
 		# Use awk to remove everything unprintable
-		model_stripped="$(echo -n "$model" | LC_CTYPE=C awk -v 'FS=[^[:print:]]' '{print $1; exit}')"
+		model_stripped="$(ar71xx_get_mtd_offset_size_format art 41 32 %c | LC_CTYPE=C awk -v 'FS=[^[:print:]]' '{print $1; exit}')"
 		case $model in
 		$'\xff'*)
 			if [ "${model:24:1}" = 'N' ]; then
@@ -114,8 +114,14 @@ tplink_board_detect() {
 	"044403"*)
 		model="ANTMINER-S3"
 		;;
+	"44440101"*)
+		model="ANTROUTER-R1"
+		;;
 	"120000"*)
 		model="MERCURY MAC1200R"
+		;;
+	"007260"*)
+		model="TellStick ZNet Lite"
 		;;
 	"3C0001"*)
 		model="OOLITE"
@@ -366,7 +372,7 @@ ar71xx_board_detect() {
 	*AP113)
 		name="ap113"
 		;;
-	*AP121)
+	*"AP121 reference board")
 		name="ap121"
 		;;
 	*AP121-MINI)
@@ -746,6 +752,9 @@ ar71xx_board_detect() {
 	"Smart Electronics Black Swift board"*)
 		name="bsb"
 		;;
+	*"Telldus TellStick ZNet Lite")
+		name="tellstick-znet-lite"
+		;;
 	*TEW-632BRP)
 		name="tew-632brp"
 		;;
@@ -820,6 +829,9 @@ ar71xx_board_detect() {
 		;;
 	*"TL-WA801ND v2")
 		name="tl-wa801nd-v2"
+		;;
+	*"TL-WA801ND v3")
+		name="tl-wa801nd-v3"
 		;;
 	*TL-WA901ND)
 		name="tl-wa901nd"
@@ -902,6 +914,9 @@ ar71xx_board_detect() {
 	*UniFi)
 		name="unifi"
 		;;
+	*"UniFi-AC")
+		name="unifiac"
+		;;
 	*"UniFi AP Pro")
 		name="uap-pro"
 		;;
@@ -970,6 +985,9 @@ ar71xx_board_detect() {
 		;;
 	*"WNR1000 V2")
 		name="wnr1000-v2"
+		;;
+	*WPN824N)
+		name="wpn824n"
 		;;
 	*WRT160NL)
 		name="wrt160nl"
