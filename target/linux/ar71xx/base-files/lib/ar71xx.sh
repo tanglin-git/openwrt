@@ -99,7 +99,7 @@ tplink_board_detect() {
 	hwid=$(tplink_get_hwid)
 	mid=$(tplink_get_mid)
 	hwver=${hwid:6:2}
-	hwver="v${hwver#0}"
+	hwver=" v${hwver#0}"
 
 	case "$hwid" in
 	"015000"*)
@@ -123,6 +123,9 @@ tplink_board_detect() {
 	"007260"*)
 		model="TellStick ZNet Lite"
 		;;
+	"066601"*)
+		model="OMYlink OMY-G1"
+		;;
 	"066602"*)
 		model="OMYlink OMY-X1"
 		;;
@@ -137,6 +140,10 @@ tplink_board_detect() {
 		;;
 	"071000"*)
 		model="TP-Link TL-WR710N"
+
+		if [ "$hwid" = '07100002' -a "$mid" = '00000002' ]; then
+			hwver=' v2.1'
+		fi
 		;;
 	"072001"*)
 		model="TP-Link TL-WR720N"
@@ -171,12 +178,16 @@ tplink_board_detect() {
 	"083000"*)
 		model="TP-Link TL-WA830RE"
 
-		if [ "$hwver" = 'v10' ]; then
-			hwver='v1'
+		if [ "$hwver" = ' v10' ]; then
+			hwver=' v1'
 		fi
 		;;
 	"084100"*)
 		model="TP-Link TL-WR841N/ND"
+
+		if [ "$hwid" = '08410002' -a "$mid" = '00000002' ]; then
+			hwver=' v1.5'
+		fi
 		;;
 	"084200"*)
 		model="TP-Link TL-WR842N/ND"
@@ -277,7 +288,7 @@ tplink_board_detect() {
 		;;
 	esac
 
-	AR71XX_MODEL="$model $hwver"
+	AR71XX_MODEL="$model$hwver"
 }
 
 tplink_pharos_get_model_string() {
@@ -638,8 +649,17 @@ ar71xx_board_detect() {
 	*"OM5P AN")
 		name="om5p-an"
 		;;
+	*"OM5P AC")
+		name="om5p-ac"
+		;;
+	*"OM5P ACv2")
+		name="om5p-acv2"
+		;;
 	*"OMY-X1")
 		name="omy-x1"
+		;;
+	*"OMY-G1")
+		name="omy-g1"
 		;;
 	*"Onion Omega")
 		name="onion-omega"
@@ -851,6 +871,9 @@ ar71xx_board_detect() {
 	*"TL-WA901ND v3")
 		name="tl-wa901nd-v3"
 		;;
+	*"TL-WA901ND v4")
+		name="tl-wa901nd-v4"
+		;;
 	*"TL-WDR3320 v2")
 		name="tl-wdr3320-v2"
 		;;
@@ -952,6 +975,9 @@ ar71xx_board_detect() {
 		;;
 	*WPE72)
 		name="wpe72"
+		;;
+	*WPJ342)
+		name="wpj342"
 		;;
 	*WPJ344)
 		name="wpj344"
