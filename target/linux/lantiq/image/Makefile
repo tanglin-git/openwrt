@@ -283,14 +283,15 @@ define Device/Default
   IMAGES := sysupgrade.bin
   IMAGE/sysupgrade.bin := append-kernel | append-rootfs | pad-rootfs
 endef
-DEVICE_VARS += BOARD_ID DEVICE_PROFILE DEVICE_DTS
+DEVICE_VARS += DEVICE_PROFILE DEVICE_DTS
 
 define Device/lantiqTpLink
   KERNEL := kernel-bin | append-dtb | lzma
   KERNEL_INITRAMFS := kernel-bin | append-dtb | lzma | tplink-fw
-  IMAGES := tplink
-  IMAGE/tplink := mktplinkfw2
+  IMAGES := sysupgrade.bin
+  IMAGE/sysupgrade.bin := mktplinkfw2
 endef
+DEVICE_VARS += BOARD_ID
 
 define Device/lantiqBrnImage
   KERNEL := kernel-bin | append-dtb | mkbrncmdline | lzma-no-dict
@@ -313,7 +314,7 @@ define lantiqImage
   define Device/$(1)
     $$(Device/lantiqImage)
     DEVICE_PROFILE := $(1)
-    DEVICE_DTS := $(1)
+    DEVICE_DTS := $(if $(2),$(2),$(1))
   endef
   TARGET_DEVICES += $(1)
 endef
@@ -380,8 +381,8 @@ Image/Build/Profile/DGN3500=$(call Image/BuildDGN3500/$(1),$(1),DGN3500)
 Image/BuildKernel/Profile/DGN3500B=$(call Image/BuildKernel/Template,DGN3500B)
 Image/Build/Profile/DGN3500B=$(call Image/BuildDGN3500B/$(1),$(1),DGN3500B)
 
-$(eval $(call lantiqImage,WBMRA))
-$(eval $(call lantiqImage,WBMRB))
+$(eval $(call lantiqImage,WBMRA,WBMR))
+$(eval $(call lantiqImage,WBMRB,WBMR))
 
 Image/BuildKernel/Profile/FRITZ7320=$(call Image/BuildKernelEVA/Template,FRITZ7320)
 Image/Build/Profile/FRITZ7320=$(call Image/BuildEVA/$(1),$(1),FRITZ7320)
