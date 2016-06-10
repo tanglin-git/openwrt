@@ -13,7 +13,7 @@ PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_VERSION:=7059cc27df894a4b845b6deb7c51425ffb4b7c5c
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.xz
 
-PKG_MAINTAINER:=Felix Fietkau <nbd@openwrt.org>
+PKG_MAINTAINER:=Felix Fietkau <nbd@nbd.name>
 PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/kernel.mk
@@ -55,7 +55,7 @@ endef
 define KernelPackage/mt76/install
 	$(INSTALL_DIR) $(1)/lib/firmware
 	cp \
-		$(if $(CONFIG_TARGET_ramips_mt7628), \
+		$(if $(CONFIG_TARGET_ramips_mt7628) || $(CONFIG_TARGET_ramips_mt7688), \
 			$(PKG_BUILD_DIR)/firmware/mt7628_e1.bin \
 			$(PKG_BUILD_DIR)/firmware/mt7628_e2.bin \
 		) \

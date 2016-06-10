@@ -1,11 +1,11 @@
-From: Felix Fietkau <nbd@openwrt.org>
+From: Felix Fietkau <nbd@nbd.name>
 Date: Mon, 18 Jan 2016 12:27:49 +0100
 Subject: [PATCH] Kbuild: don't hardcode path to awk in scripts/ld-version.sh
 
 On some systems /usr/bin/awk does not exist, or is broken. Find it via
 $PATH instead.
 
-Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 ---
 
 --- a/scripts/ld-version.sh
@@ -16,7 +16,7 @@ Signed-off-by: Felix Fietkau <nbd@openwrt.org>
  # extract linker version number from stdin and turn into single number
 +exec awk '
  	{
- 	gsub(".*)", "");
+ 	gsub(".*\\)", "");
  	split($1,a, ".");
  	print a[1]*10000000 + a[2]*100000 + a[3]*10000 + a[4]*100 + a[5];
  	exit

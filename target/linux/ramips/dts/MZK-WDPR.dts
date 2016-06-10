@@ -1,6 +1,6 @@
 /dts-v1/;
 
-/include/ "rt3050.dtsi"
+#include "rt3050.dtsi"
 
 / {
 	compatible = "MZK-WDPR", "ralink,rt3052-soc";
@@ -72,5 +72,15 @@
 
 	otg@101c0000 {
 		status = "okay";
+	};
+
+	gpio-export {
+		compatible = "gpio-export";
+
+		lcd_ctrl1 {
+			gpio-export,name = "lcd_ctrl1";
+			gpio-export,output = <0>;
+			gpios = <&gpio0 1 0>;
+		};
 	};
 };
